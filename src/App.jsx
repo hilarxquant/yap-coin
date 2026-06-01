@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { TOKEN } from './config'
+import { useState, useEffect, useMemo } from 'react'
+import { TOKEN, pumpFunUrl } from './config'
 import './App.css'
 
 function timeAgo(ts) {
@@ -51,12 +51,32 @@ export default function App() {
     return () => clearInterval(id)
   }, [])
 
+  const mint = stats.tokenAddress || TOKEN.mintOverride || ''
+  const pumpUrl = pumpFunUrl(mint)
+  const isLive = Boolean(mint)
+
   const copyCA = async () => {
-    if (!TOKEN.contractAddress) return
-    await navigator.clipboard.writeText(TOKEN.contractAddress)
+    if (!mint) return
+    await navigator.clipboard.writeText(mint)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
+
+  const navCta = useMemo(() => {
+    if (pumpUrl) {
+      return (
+        <>
+          <a href={pumpUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+            Community
+          </a>
+          <a href={pumpUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+            Start yapping
+          </a>
+        </>
+      )
+    }
+    return <span className="btn btn-primary btn-disabled">Launching soon</span>
+  }, [pumpUrl])
 
   return (
     <div className="page">
@@ -68,17 +88,17 @@ export default function App() {
             <span className="brand-ticker">{TOKEN.ticker}</span>
           </span>
         </a>
-        <nav className="topbar-nav">
-          <a href={TOKEN.pumpFunUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
-            Community
-          </a>
-          <a href={TOKEN.pumpFunUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-            Start yapping
-          </a>
-        </nav>
+        <nav className="topbar-nav">{navCta}</nav>
       </header>
 
       <main id="top" className="main">
+        {!isLive && (
+          <div className="launch-banner" role="status">
+            <strong>$YAP is launching soon.</strong> Contract and treasury are being set up — this site is not
+            connected to the old Bull coin. Check back after go-live.
+          </div>
+        )}
+
         <section className="hero">
           <p className="eyebrow">Coin Communities · pump.fun</p>
           <h1 className="hero-title">
@@ -88,21 +108,23 @@ export default function App() {
           <p className="hero-lead">{TOKEN.tagline}</p>
           <p className="hero-detail">
             Creator fees are claimed every 5 minutes and split <strong>equally</strong> among wallets that
-            posted in the community and hold at least 1 token. No likes, no raids — just yap + hold.
+            posted in the community and hold at least 1 {TOKEN.ticker}. No likes, no raids — just yap + hold.
           </p>
           <div className="hero-actions">
-            <a href={TOKEN.pumpFunUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-lg">
-              Open community feed
-            </a>
-            {TOKEN.contractAddress && (
+            {pumpUrl ? (
+              <a href={pumpUrl} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-lg">
+                Open community feed
+              </a>
+            ) : (
+              <span className="btn btn-primary btn-lg btn-disabled">Community opens at launch</span>
+            )}
+            {mint && (
               <button type="button" className="btn btn-outline btn-lg" onClick={copyCA}>
                 {copied ? 'Copied' : 'Copy contract'}
               </button>
             )}
           </div>
-          {TOKEN.contractAddress && (
-            <code className="ca-chip">{TOKEN.contractAddress}</code>
-          )}
+          {mint && <code className="ca-chip">{mint}</code>}
         </section>
 
         <section className="metrics" aria-label="Live stats">
@@ -158,13 +180,18 @@ export default function App() {
           <section className="panel panel-feed">
             <div className="panel-head">
               <h2 className="section-heading">Live feed</h2>
-              <span className="live-pill">
-                <span className="live-dot" />
-                Live
-              </span>
+              {isLive && (
+                <span className="live-pill">
+                  <span className="live-dot" />
+                  Live
+                </span>
+              )}
             </div>
             <ul className="feed">
-              {posts.length === 0 && (
+              {!isLive && (
+                <li className="feed-empty">Feed starts when the new $YAP mint is configured on the backend.</li>
+              )}
+              {isLive && posts.length === 0 && (
                 <li className="feed-empty">No posts ingested yet. Be the first to yap.</li>
               )}
               {posts.map(p => (

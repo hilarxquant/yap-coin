@@ -7,6 +7,8 @@ Post in your token's [Coin Communities](https://coincommunities.org/) feed on pu
 - Frontend: https://yap-coin.vercel.app
 - API: https://yap-coin.onrender.com
 
+**New mint / new treasury:** see [LAUNCH.md](./LAUNCH.md). The site reads the contract from the API (`MINT` on Render). No Bull addresses are hardcoded.
+
 ## Local dev
 
 ```bash

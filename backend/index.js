@@ -226,7 +226,14 @@ app.post('/admin/clear-db', (req, res) => {
 const PORT = config.port
 app.listen(PORT, () => {
   console.log(`[yap-backend] http://localhost:${PORT}`)
-  console.log(`[yap-backend] Mint: ${config.mint || 'NOT SET'}`)
+  if (!config.mint) {
+    console.warn('[yap-backend] MINT not set — waiting for new $YAP launch (see LAUNCH.md)')
+  } else {
+    console.log(`[yap-backend] Mint: ${config.mint}`)
+  }
+  if (!config.treasuryPrivateKey) {
+    console.warn('[yap-backend] TREASURY_PRIVATE_KEY not set')
+  }
   console.log(`[yap-backend] CC API: ${config.ccApiKey ? 'configured' : 'MISSING'}`)
 })
 
@@ -248,6 +255,7 @@ async function selfHealPool() {
 }
 
 async function feeCollectionLoop() {
+  if (!config.mint || !config.treasuryPrivateKey) return
   try {
     const collected = await collectCreatorFees()
     console.log(
@@ -261,6 +269,7 @@ async function feeCollectionLoop() {
 }
 
 async function syncAndPayLoop() {
+  if (!config.mint) return
   try {
     await selfHealPool()
     const feedResult = await syncFeed()

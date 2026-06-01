@@ -7,5 +7,3 @@ backend/.env
 .env.local
 .render-api-key
 dist/
-
-.vercel
