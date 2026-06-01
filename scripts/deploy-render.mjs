@@ -92,15 +92,18 @@ async function main() {
         ownerId,
         repo: REPO,
         branch: 'main',
+        rootDir: 'backend',
         autoDeploy: 'yes',
         serviceDetails: {
           env: 'node',
+          runtime: 'node',
           region: 'oregon',
           plan: 'starter',
-          rootDir: 'backend',
-          buildCommand: 'npm install',
-          startCommand: 'node index.js',
           healthCheckPath: '/health',
+          envSpecificDetails: {
+            buildCommand: 'npm install',
+            startCommand: 'node index.js',
+          },
         },
       }),
     })
