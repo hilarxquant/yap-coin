@@ -1,6 +1,11 @@
-# Yap-to-Earn
+# Yap to Earn · $YAP
 
-Post in your token's [Coin Communities](https://coincommunities.org/) feed on pump.fun. Hold the token. Creator fees are claimed every 5 minutes and split **equally** among qualifying posters.
+Post in your token's [Coin Communities](https://coincommunities.org/) feed on pump.fun. Hold $YAP. Creator fees are claimed every 5 minutes and split **equally** among qualifying posters.
+
+**Live**
+
+- Frontend: https://yap-coin.vercel.app
+- API: https://yap-coin.onrender.com
 
 ## Local dev
 
