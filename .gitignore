@@ -1,0 +1,9 @@
+node_modules/
+dist/
+backend/node_modules/
+backend/data/
+backend/.env
+.env
+.env.local
+.render-api-key
+dist/

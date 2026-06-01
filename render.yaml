@@ -1,0 +1,30 @@
+# Render Blueprint — backend only (frontend on Vercel)
+services:
+  - type: web
+    name: yap-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node index.js
+    plan: starter
+    envVars:
+      - key: MINT
+        sync: false
+      - key: TREASURY_PRIVATE_KEY
+        sync: false
+      - key: RPC_URL
+        sync: false
+      - key: CC_API_KEY
+        sync: false
+      - key: CC_BASE_URL
+        value: https://api.coin-communities.xyz
+      - key: MIN_HOLD
+        value: "1"
+      - key: MIN_PAYOUT_SOL
+        value: "0.01"
+      - key: PORT
+        value: "3001"
+      - key: COLLECT_INTERVAL_MS
+        value: "300000"
+      - key: ADMIN_SECRET
+        sync: false
