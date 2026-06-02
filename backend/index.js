@@ -115,6 +115,15 @@ app.get('/stats', async (req, res) => {
     onchainTotalSent = onchain.reduce((sum, p) => sum + (p.amount || 0), 0)
   } catch {}
 
+  let treasuryBalanceSol = null
+  try {
+    const pk = treasuryPubkey()
+    if (pk) {
+      const conn = new Connection(config.rpcUrl, 'confirmed')
+      treasuryBalanceSol = (await conn.getBalance(pk)) / 1e9
+    }
+  } catch {}
+
   res.json({
     tokenAddress: config.mint,
     totalSubmissions: submissions.length,
@@ -123,6 +132,7 @@ app.get('/stats', async (req, res) => {
     totalSentSol: onchainTotalSent,
     poolSol: getPendingPool(),
     totalClaimedSol: Math.max(getTotalClaimed(), config.lastCollectedSol || 0),
+    treasuryBalanceSol,
     qualifyingThisCycle,
     uniqueEarners: uniqueWallets.size,
     nextCycleInSec: nextCycleInSec(),
@@ -237,23 +247,6 @@ app.listen(PORT, () => {
   console.log(`[yap-backend] CC API: ${config.ccApiKey ? 'configured' : 'MISSING'}`)
 })
 
-async function selfHealPool() {
-  try {
-    const pk = treasuryPubkey()
-    if (!pk) return
-    if (getPendingPool() > 0.001) return
-    const conn = new Connection(config.rpcUrl, 'confirmed')
-    const sol = (await conn.getBalance(pk)) / 1e9
-    const seed = Math.max(0, sol - config.reserveSol - 0.005)
-    if (seed > config.minPayoutSol) {
-      setPendingPool(seed)
-      console.log(`[selfheal] Seeded pool ${seed.toFixed(6)} SOL`)
-    }
-  } catch (e) {
-    console.error('[selfheal]', e.message)
-  }
-}
-
 async function feeCollectionLoop() {
   if (!config.mint || !config.treasuryPrivateKey) return
   try {
@@ -271,7 +264,6 @@ async function feeCollectionLoop() {
 async function syncAndPayLoop() {
   if (!config.mint) return
   try {
-    await selfHealPool()
     const feedResult = await syncFeed()
     if (feedResult.ingested > 0) {
       console.log(`[feed] ingested=${feedResult.ingested} qualified=${feedResult.qualified}`)
@@ -290,7 +282,6 @@ async function syncAndPayLoop() {
   }
 }
 
-selfHealPool()
 if (config.enableFeeCollection) {
   feeCollectionLoop()
   setInterval(feeCollectionLoop, config.collectIntervalMs)

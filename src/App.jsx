@@ -117,8 +117,8 @@ export default function App() {
       <main id="top" className="main">
         {!isLive && (
           <div className="launch-banner" role="status">
-            <strong>$YAP is launching soon.</strong> Contract and treasury are being set up — this site is not
-            connected to the old Bull coin. Check back after go-live.
+            <strong>$YAP launches soon.</strong> Contract and treasury wallet are being wired in — feed and payouts
+            go live the moment the mint is set on the backend.
           </div>
         )}
 
@@ -154,11 +154,15 @@ export default function App() {
         <section className="metrics" aria-label="Live stats">
           <div className="metric">
             <span className="metric-value">{(stats.poolSol ?? 0).toFixed(3)}</span>
-            <span className="metric-label">Pool (SOL)</span>
+            <span className="metric-label">Rewards pool</span>
+          </div>
+          <div className="metric">
+            <span className="metric-value">{(stats.totalClaimedSol ?? 0).toFixed(3)}</span>
+            <span className="metric-label">Fees claimed</span>
           </div>
           <div className="metric">
             <span className="metric-value">{(stats.totalSentSol ?? 0).toFixed(3)}</span>
-            <span className="metric-label">Total paid</span>
+            <span className="metric-label">Paid to yappers</span>
           </div>
           <div className="metric">
             <span className="metric-value">{stats.uniqueEarners ?? 0}</span>

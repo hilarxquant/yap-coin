@@ -28,7 +28,12 @@ export async function distributePayout(submissions) {
   const pending = getPendingPool()
   const balance = await connection.getBalance(keypair.publicKey)
   const balanceSol = balance / LAMPORTS_PER_SOL
+  // Pool = claimed creator fees only (pool.json). Wallet balance is only a spend cap.
   const available = Math.min(pending, Math.max(0, balanceSol - config.reserveSol))
+  if (pending <= 0) {
+    console.log('[payout] No claimed fees in pool')
+    return []
+  }
 
   if (available < config.minPayoutSol) {
     console.log(
