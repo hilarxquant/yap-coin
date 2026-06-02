@@ -4,6 +4,8 @@ export const TOKEN = {
   ticker: '$YAP',
   tagline: 'Post in the community. Hold $YAP. Get paid in SOL.',
   apiUrl: import.meta.env.VITE_API_URL || 'https://yap-coin.onrender.com',
+  twitterUrl: 'https://x.com/yaptoearnPF',
+  twitterHandle: '@yaptoearnPF',
   /** Optional build-time override; normally use /stats tokenAddress from the backend. */
   mintOverride: import.meta.env.VITE_MINT || '',
 }

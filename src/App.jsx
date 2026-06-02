@@ -63,9 +63,27 @@ export default function App() {
   }
 
   const navCta = useMemo(() => {
+    const xLink = (
+      <a
+        href={TOKEN.twitterUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="btn btn-icon"
+        aria-label={TOKEN.twitterHandle}
+        title={TOKEN.twitterHandle}
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden>
+          <path
+            fill="currentColor"
+            d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+          />
+        </svg>
+      </a>
+    )
     if (pumpUrl) {
       return (
         <>
+          {xLink}
           <a href={pumpUrl} target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
             Community
           </a>
@@ -75,14 +93,19 @@ export default function App() {
         </>
       )
     }
-    return <span className="btn btn-primary btn-disabled">Launching soon</span>
+    return (
+      <>
+        {xLink}
+        <span className="btn btn-primary btn-disabled">Launching soon</span>
+      </>
+    )
   }, [pumpUrl])
 
   return (
     <div className="page">
       <header className="topbar">
         <a href="#top" className="brand">
-          <span className="brand-mark" aria-hidden />
+          <img src="/logo.png" alt="" className="brand-logo" width={36} height={36} />
           <span className="brand-text">
             <span className="brand-name">Yap to Earn</span>
             <span className="brand-ticker">{TOKEN.ticker}</span>
@@ -100,6 +123,7 @@ export default function App() {
         )}
 
         <section className="hero">
+          <img src="/logo.png" alt="Yap to Earn" className="hero-logo" width={88} height={88} />
           <p className="eyebrow">Coin Communities · pump.fun</p>
           <h1 className="hero-title">
             Yap to Earn
@@ -132,17 +156,14 @@ export default function App() {
             <span className="metric-value">{(stats.poolSol ?? 0).toFixed(3)}</span>
             <span className="metric-label">Pool (SOL)</span>
           </div>
-          <div className="metric-divider" />
           <div className="metric">
             <span className="metric-value">{(stats.totalSentSol ?? 0).toFixed(3)}</span>
             <span className="metric-label">Total paid</span>
           </div>
-          <div className="metric-divider" />
           <div className="metric">
             <span className="metric-value">{stats.uniqueEarners ?? 0}</span>
             <span className="metric-label">Earners</span>
           </div>
-          <div className="metric-divider" />
           <div className="metric">
             <span className="metric-value metric-accent">{formatCountdown(stats.nextCycleInSec)}</span>
             <span className="metric-label">Next payout</span>
@@ -265,6 +286,11 @@ export default function App() {
       </main>
 
       <footer className="footer">
+        <nav className="footer-links">
+          <a href={TOKEN.twitterUrl} target="_blank" rel="noopener noreferrer">
+            {TOKEN.twitterHandle} on X
+          </a>
+        </nav>
         <p>Yap to Earn · {TOKEN.ticker} · pump.fun creator fees + Coin Communities</p>
       </footer>
     </div>
